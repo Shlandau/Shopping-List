@@ -2,46 +2,43 @@
 var button = document.getElementById("enter");
 var input = document.getElementById("userinput");
 var parentListNode = document.getElementById("list");
-var childListElements = document.getElementById("li");
+var childListElements = parentListNode.querySelectorAll("li");
 var listArray = []; //used to located item clicked for strikethrough
 var lowerCaseListArray = [];
-var indexValue;
-var on_Off_Switch;
 
 //initiates program
-fillArray(); 
-lowerCaseArray(); 
 listenForListElementClick();
 
-
 function listenForListElementClick(){
+	let indexValue;
 	let i = 0;
+
 	fillArray();
-	lowerCaseArray();
 	for (i; i < arrayLength(); i++) {	
-		parentListNode.children[i].onclick = function(){
+		parentListNode.children[i].onclick = function() {
 		indexValue = listArray.indexOf(this.innerHTML);
-		strikeThrough(indexValue);
-		listenForDeleteButtonClick(indexValue);
+		strikeThrough(indexValue); //No. 1
 		fillArray();
-		lowerCaseArray();
 		}
 	}
 }
 
 function strikeThrough(indexValue){
+	let on_Off_Switch;
+
+	if (indexValue != arrayLength()) {
 	on_Off_Switch = parentListNode.children[indexValue].classList.toggle("done");
 	switch (on_Off_Switch){
 		case true:
-			createDeleteButton(indexValue);	
+			createDeleteButton(indexValue);
 			break;
 		case false:
 			removeDeleteButton(indexValue);
 			break;
 		default:
 			listenForListElementClick();
+		}
 	}
-	return on_Off_Switch;
 }
 
 function createListElement() {
@@ -62,21 +59,13 @@ function createListElement() {
 	}
 }
 
-function listenForDeleteButtonClick(indexValue){
-	var buttonDelete = document.getElementById(indexValue);
-	if (buttonDelete !== null && buttonDelete !== undefined) {
-		buttonDelete.onclick =function() {
-			removeListAfterClick(indexValue);
-		}
-	}
-}
-
 function fillArray() {
 	listArray = [];
 	let i = 0;
 	for (i; i < arrayLength(); i++){
 		listArray.push(parentListNode.children[i].innerHTML);
 	}
+	lowerCaseArray();
 	return listArray;
 }
 
@@ -86,6 +75,7 @@ function lowerCaseArray(){
 	for (i; i < arrayLength(); i++) {
 		lowerCaseListArray.push(listArray[i].toLowerCase());
 	}
+	return lowerCaseListArray;
 }
 
 function inputLength() {
@@ -94,11 +84,6 @@ function inputLength() {
 
 function arrayLength() {
 	return parentListNode.childElementCount;
-}
-
-function removeListAfterClick(indexValue){
-	parentListNode.removeChild(parentListNode.children[indexValue]);
-	
 }
 
 function addListAfterClick() {
@@ -127,16 +112,18 @@ function checkForDuplicate(inputText) {
 function createDeleteButton(indexValue){
 	var deleteButton = document.createElement("BUTTON");
 	var deleteButtonText = document.createTextNode("Delete Line");
-	deleteButton.id = indexValue;
+
 	deleteButton.appendChild(deleteButtonText);
 	parentListNode.children[indexValue].appendChild(deleteButton);
-	//return deleteButton.id;
+	deleteButton.addEventListener("click", function(event) {
+		event.target.parentNode.remove();
+		strikeThrough(indexValue);
+	})
 }
 
 //Remove the delete button if user unstrikes the line.
 function removeDeleteButton(indexValue){
-	var itemToRemove = document.getElementById(indexValue);
-	itemToRemove.parentNode.removeChild(itemToRemove);
+	parentListNode.children[indexValue].firstElementChild.remove();
 }
 
 button.addEventListener("click", addListAfterClick);
