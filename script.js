@@ -17,7 +17,7 @@ function listenForListElementClick(){
 	for (i; i < arrayLength(); i++) {	
 		parentListNode.children[i].onclick = function() {
 		indexValue = listArray.indexOf(this.innerHTML);
-		strikeThrough(indexValue); //No. 1
+		strikeThrough(indexValue);
 		fillArray();
 		}
 	}
@@ -101,11 +101,8 @@ function addListAfterKeypress(event) {
 }
 
 function checkForDuplicate(inputText) {
-//	console.log(inputText + '<button id="' + indexValue + '"> Delete Line</button>'); need to remove everything after "<"".
-	if (lowerCaseListArray.indexOf(inputText.toLowerCase()) === -1) {
-		return false;
-	}
-	else return true;
+let checkInputText = new RegExp(inputText.toLowerCase());	
+return checkInputText.test(lowerCaseListArray);
 }
 
 //Create a delete button and add it adjacent to the line item targeted for deletion.
